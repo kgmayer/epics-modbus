@@ -1,0 +1,204 @@
+record(bo, "$(PORT):powerOn") {
+    field(DTYP, "asynUInt32Digital")
+    field(OUT, "@asynMask(powerOn 0 0x1)")
+    field(SCAN, "Passive")
+}
+
+record(bo, "$(PORT):voltageOn") {
+    field(DTYP, "asynUInt32Digital")
+    field(OUT, "@asynMask(voltageOn 0 0x1)")
+    field(SCAN, "Passive")
+}
+
+record(bo, "$(PORT):resetBlocks") {
+    field(DTYP, "asynUInt32Digital")
+    field(OUT, "@asynMask(resetBlks 0 0x1)")
+    field(SCAN, "Passive")
+    field(HIGH, 1)
+}
+
+record(bi, "$(PORT):ready") {
+    field(DTYP, "asynUInt32Digital")
+    field(INP, "@asynMask(statBits 0 0x1)")
+    field(SCAN, "I/O Intr")
+}
+
+record(bi, "$(PORT):powerGood") {
+    field(DTYP, "asynUInt32Digital")
+    field(INP, "@asynMask(statBits 1 0x1)")
+    field(SCAN, "I/O Intr")
+}
+
+record(bi, "$(PORT):noWater") {
+    field(DTYP, "asynUInt32Digital")
+    field(INP, "@asynMask(statBits 2 0x1)")
+    field(SCAN, "I/O Intr")
+}
+
+record(bi, "$(PORT):autoOff") {
+    field(DTYP, "asynUInt32Digital")
+    field(INP, "@asynMask(statBits 3 0x1)")
+    field(SCAN, "I/O Intr")
+}
+
+record(bi, "$(PORT):radOverheat") {
+    field(DTYP, "asynUInt32Digital")
+    field(INP, "@asynMask(statBits 4 0x1)")
+    field(SCAN, "I/O Intr")
+}
+
+record(bi, "$(PORT):drvError") {
+    field(DTYP, "asynUInt32Digital")
+    field(INP, "@asynMask(statBits 5 0x1)")
+    field(SCAN, "I/O Intr")
+}
+
+record(bi, "$(PORT):extBlock1") {
+    field(DTYP, "asynUInt32Digital")
+    field(INP, "@asynMask(statBits 6 0x1)")
+    field(SCAN, "I/O Intr")
+}
+
+record(bi, "$(PORT):extBlock2") {
+    field(DTYP, "asynUInt32Digital")
+    field(INP, "@asynMask(statBits 7 0x1)")
+    field(SCAN, "I/O Intr")
+}
+
+record(bi, "$(PORT):curOverflow") {
+    field(DTYP, "asynUInt32Digital")
+    field(INP, "@asynMask(statBits 8 0x1)")
+    field(SCAN, "I/O Intr")
+}
+
+record(bi, "$(PORT):curInOverflow") {
+    field(DTYP, "asynUInt32Digital")
+    field(INP, "@asynMask(statBits 9 0x1)")
+    field(SCAN, "I/O Intr")
+}
+
+record(bi, "$(PORT):curTransOverflow") {
+    field(DTYP, "asynUInt32Digital")
+    field(INP, "@asynMask(statBits 10 0x1)")
+    field(SCAN, "I/O Intr")
+}
+
+record(bi, "$(PORT):shortCircuit") {
+    field(DTYP, "asynUInt32Digital")
+    field(INP, "@asynMask(statBits 11 0x1)")
+    field(SCAN, "I/O Intr")
+}
+
+record(bi, "$(PORT):thermRelayInp") {
+    field(DTYP, "asynUInt32Digital")
+    field(INP, "@asynMask(statBits 13 0x1)")
+    field(SCAN, "I/O Intr")
+}
+
+record(bi, "$(PORT):thermRelayInv") {
+    field(DTYP, "asynUInt32Digital")
+    field(INP, "@asynMask(statBits 14 0x1)")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(PORT):statOutVolts") {
+    field(DTYP, "asynInt32")
+    field(INP, "@asynMask(statRegs 0 16)")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(PORT):statOutAmps") {
+    field(DTYP, "asynInt32")
+    field(INP, "@asynMask(statRegs 1 16)")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(PORT):statTransAmps") {
+    field(DTYP, "asynInt32")
+    field(INP, "@asynMask(statRegs 2 16)")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(PORT):statRectVolts") {
+    field(DTYP, "asynInt32")
+    field(INP, "@asynMask(statRegs 3 16)")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(PORT):statInAmps") {
+    field(DTYP, "asynInt32")
+    field(INP, "@asynMask(statRegs 4 16)")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(PORT):statRadTemp") {
+    field(DTYP, "asynInt32")
+    field(INP, "@asynMask(statRegs 5 16)")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(PORT):statBrdTemp") {
+    field(DTYP, "asynInt32")
+    field(INP, "@asynMask(statRegs 6 16)")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(PORT):statPWMDutyCycle") {
+    field(DTYP, "asynInt32")
+    field(INP, "@asynMask(statRegs 7 16)")
+    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(PORT):outVolts") {
+    field(DTYP, "asynInt32")
+    field(OUT, "@asynMask(outVolts 0 16)")
+    field(SCAN, "Passive")
+}
+
+record(ao, "$(PORT):outAmpsMax") {
+    field(DTYP, "asynInt32")
+    field(OUT, "@asynMask(outAmpsMax 0 16)")
+    field(SCAN, "Passive")
+}
+
+record(ao, "$(PORT):errPause") {
+    field(DTYP, "asynInt32")
+    field(OUT, "@asynMask(errPause 0 16)")
+    field(SCAN, "Passive")
+}
+
+record(ao, "$(PORT):errRate") {
+    field(DTYP, "asynInt32")
+    field(OUT, "@asynMask(errRate 0 16)")
+    field(SCAN, "Passive")
+}
+
+record(ao, "$(PORT):coefKP") {
+    field(DTYP, "asynInt32")
+    field(OUT, "@asynMask(coefKP 0 16)")
+    field(SCAN, "Passive")
+}
+
+record(ao, "$(PORT):coefKI") {
+    field(DTYP, "asynInt32")
+    field(OUT, "@asynMask(coefKI 0 16)")
+    field(SCAN, "Passive")
+}
+
+record(ao, "$(PORT):coefKD") {
+    field(DTYP, "asynInt32")
+    field(OUT, "@asynMask(coefKD 0 16)")
+    field(SCAN, "Passive")
+}
+
+record(ao, "$(PORT):coefKD") {
+    field(DTYP, "asynInt32")
+    field(OUT, "@asynMask(coefKD 0 16)")
+    field(SCAN, "Passive")
+}
+
+record(ai, "$(PORT):devInfo") {
+    field(DTYP, "asynInt32")
+    field(INP, "@asynMask(devInfo 0 16)")
+    field(SCAN, "I/O Intr")
+}

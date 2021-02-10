@@ -1,6 +1,6 @@
 /* modbusInterpose.c */
 
-/* 
+/*
  * Modbus interpose interfaces for asyn.  The Modbus driver builds Modbus frames
  * and sends them to the drvAsynIPPort or drvAsynSerialPort drivers.  This
  * file implements the interpose interface that adds the required header information
@@ -91,7 +91,7 @@ typedef struct modbusPvt {
     int            transactionId;
     char           buffer[MAX_MODBUS_FRAME_SIZE];
 } modbusPvt;
-    
+
 /* asynOctet methods */
 static asynStatus writeIt(void *ppvt,asynUser *pasynUser,
     const char *data,size_t numchars,size_t *nbytesTransfered);
@@ -118,7 +118,7 @@ static asynOctet octet = {
 
 
 epicsShareFunc int modbusInterposeConfig(const char *portName,
-                                         modbusLinkType linkType, 
+                                         modbusLinkType linkType,
                                          int timeoutMsec, int writeDelayMsec)
 {
     modbusPvt     *pPvt;
@@ -150,7 +150,7 @@ epicsShareFunc int modbusInterposeConfig(const char *portName,
                portName, pasynUser->errorMessage);
         goto bad;
     }
-    
+
     status = pasynManager->interposeInterface(portName, 0,
        &pPvt->modbusInterface, &pasynInterface);
     if(status!=asynSuccess) {
@@ -161,7 +161,7 @@ epicsShareFunc int modbusInterposeConfig(const char *portName,
     pPvt->octetPvt = pasynInterface->drvPvt;
 
     return(0);
-    
+
     bad:
     pasynManager->freeAsynUser(pasynUser);
     free(pPvt);
@@ -169,8 +169,8 @@ epicsShareFunc int modbusInterposeConfig(const char *portName,
 }
 
 
-static void computeCRC(char *buffer, int nchars, 
-                       unsigned char *CRC_Lo, unsigned char *CRC_Hi) 
+static void computeCRC(char *buffer, int nchars,
+                       unsigned char *CRC_Lo, unsigned char *CRC_Hi)
 {
     int CRC_Index ;              /* will index into CRC lookup table */
     int i;
@@ -185,7 +185,7 @@ static void computeCRC(char *buffer, int nchars,
     }
 }
 
-static void computeLRC(char *buffer, int nchars, unsigned char *LRC) 
+static void computeLRC(char *buffer, int nchars, unsigned char *LRC)
 {
     int i;
 
@@ -196,10 +196,10 @@ static void computeLRC(char *buffer, int nchars, unsigned char *LRC)
     *LRC = (unsigned char) -((char)*LRC);
 }
 
-static void encodeASCII(char *buffer, unsigned char value) 
+static void encodeASCII(char *buffer, unsigned char value)
 {
     unsigned char temp;
-    
+
     temp = value >> 4;
     if (temp < 10) temp+= '0'; else temp+= 'A'-10;
     *buffer++ = (char)temp;
@@ -208,11 +208,11 @@ static void encodeASCII(char *buffer, unsigned char value)
     *buffer = (char)temp;
 }
 
-static void decodeASCII(char *buffer, char *value) 
+static void decodeASCII(char *buffer, char *value)
 {
     char temp;
     unsigned char uvalue;
-    
+
     temp = *buffer++;
     if (temp > '9') uvalue = temp - 'A' + 10; else uvalue = temp - '0';
     uvalue = uvalue << 4;
@@ -242,7 +242,7 @@ static asynStatus writeIt(void *ppvt, asynUser *pasynUser,
     int i;
 
     if (pPvt->writeDelay > 0.0) epicsThreadSleep(pPvt->writeDelay);
-    
+
     pasynUser->timeout = pPvt->timeout;
 
     switch(pPvt->linkType) {
@@ -252,7 +252,7 @@ static asynStatus writeIt(void *ppvt, asynUser *pasynUser,
             mbapHeader.transactId    = htons(pPvt->transactionId);
             mbapHeader.protocolType  = htons(modbusEncoding);
             mbapHeader.cmdLength     = htons(cmdLength);
- 
+
             /* Copy the MBAP header to the local buffer */
             memcpy(pPvt->buffer, &mbapHeader, mbapSize);
 
@@ -262,7 +262,7 @@ static asynStatus writeIt(void *ppvt, asynUser *pasynUser,
             /* Send the frame with the underlying driver */
             nWrite = numchars + mbapSize;
             status = pPvt->pasynOctet->write(pPvt->octetPvt, pasynUser,
-                                             pPvt->buffer, nWrite, 
+                                             pPvt->buffer, nWrite,
                                              &nbytesActual);
             *nbytesTransfered = (nbytesActual > numchars) ? numchars : nbytesActual;
             break;
@@ -278,7 +278,7 @@ static asynStatus writeIt(void *ppvt, asynUser *pasynUser,
             /* Send the frame with the underlying driver */
             nWrite = numchars + 2;
             status = pPvt->pasynOctet->write(pPvt->octetPvt, pasynUser,
-                                             pPvt->buffer, nWrite, 
+                                             pPvt->buffer, nWrite,
                                              &nbytesActual);
             *nbytesTransfered = (nbytesActual > numchars) ? numchars : nbytesActual;
             break;
@@ -304,11 +304,25 @@ static asynStatus writeIt(void *ppvt, asynUser *pasynUser,
             /* Send the frame with the underlying driver */
             nWrite = pout - pPvt->buffer;
             status = pPvt->pasynOctet->write(pPvt->octetPvt, pasynUser,
-                                             pPvt->buffer, nWrite, 
+                                             pPvt->buffer, nWrite,
                                              &nbytesActual);
             *nbytesTransfered = (nbytesActual > numchars) ? numchars : nbytesActual;
 
             break;
+
+        case modbusLinkTCP2:
+            /* Copy the Modbus data to the local buffer */
+            numchars -= 1;
+            memcpy(pPvt->buffer, data + 1, numchars);
+
+            /* Send the frame with the underlying driver */
+            nWrite = numchars;
+            status = pPvt->pasynOctet->write(pPvt->octetPvt, pasynUser,
+                                             pPvt->buffer, nWrite,
+                                             &nbytesActual);
+            *nbytesTransfered = (nbytesActual > numchars) ? numchars : nbytesActual;
+            break;
+
     }
     return status;
 }
@@ -333,13 +347,13 @@ static asynStatus readIt(void *ppvt, asynUser *pasynUser,
 
     /* Set number read to 0 in case of errors */
     *nbytesTransfered = 0;
-    
+
     switch(pPvt->linkType) {
         case modbusLinkTCP:
             nRead = maxchars + mbapSize + 1;
             for (;;) {
                 status = pPvt->pasynOctet->read(pPvt->octetPvt, pasynUser,
-                                                pPvt->buffer, nRead, 
+                                                pPvt->buffer, nRead,
                                                 &nbytesActual, eomReason);
                 if (status != asynSuccess) {
                     *nbytesTransfered = nbytesActual;
@@ -369,7 +383,7 @@ static asynStatus readIt(void *ppvt, asynUser *pasynUser,
                 *nbytesTransfered = nbytesActual;
                 return status;
             }
-            /* Compute and check the CRC including the CRC bytes themselves, 
+            /* Compute and check the CRC including the CRC bytes themselves,
              * should be 0 */
             computeCRC(pPvt->buffer, (int)nbytesActual, &CRC_Lo, &CRC_Hi);
             if ((CRC_Lo != 0) || (CRC_Hi != 0)) {
@@ -389,7 +403,7 @@ static asynStatus readIt(void *ppvt, asynUser *pasynUser,
             break;
 
         case modbusLinkASCII:
-            /* The maximum number of characters is 2*maxchars + 7 
+            /* The maximum number of characters is 2*maxchars + 7
              * (7= :(1), address(2), LRC(2), CR/LF(2) */
             nRead = maxchars*2 + 7;
             status = pPvt->pasynOctet->read(pPvt->octetPvt, pasynUser,
@@ -415,7 +429,7 @@ static asynStatus readIt(void *ppvt, asynUser *pasynUser,
                           driver, (int)nRead, data[i], LRC);
                 return asynError;
             }
-            /* The buffer now contains binary data, but the first byte is address.  
+            /* The buffer now contains binary data, but the first byte is address.
              * and last byte is LRC; Copy over buffer so first byte is function code */
             nRead = nRead - 2;
             if (nRead < 0) nRead = 0;
@@ -424,8 +438,29 @@ static asynStatus readIt(void *ppvt, asynUser *pasynUser,
             if (nRead<maxchars) data[nRead] = 0; /*null terminate string if room*/
             *nbytesTransfered = nRead;
             break;
+
+        case modbusLinkTCP2:
+            nRead = maxchars;
+            for (;;) {
+                status = pPvt->pasynOctet->read(pPvt->octetPvt, pasynUser,
+                                                pPvt->buffer, nRead,
+                                                &nbytesActual, eomReason);
+                if (status != asynSuccess) {
+                    *nbytesTransfered = nbytesActual;
+                    return status;
+                }
+                break;
+            }
+            /* Copy bytes to output buffer */
+            nRead = nbytesActual;
+            if (nRead < 0) nRead = 0;
+            if (nRead > maxchars) nRead = maxchars;
+            if (nRead > 0) memcpy(data, pPvt->buffer, nRead);
+            if(nRead<maxchars) data[nRead] = 0; /*null terminate string if room*/
+            *nbytesTransfered = nRead;
+            break;
     }
-     
+
     return status;
 }
 
@@ -441,9 +476,9 @@ static asynStatus registerInterruptUser(void *ppvt, asynUser *pasynUser,
 {
     modbusPvt *pPvt = (modbusPvt *)ppvt;
     return pPvt->pasynOctet->registerInterruptUser(pPvt->octetPvt,
-                                               pasynUser, callback, userPvt, 
+                                               pasynUser, callback, userPvt,
                                                registrarPvt);
-} 
+}
 
 static asynStatus cancelInterruptUser(void *drvPvt, asynUser *pasynUser,
      void *registrarPvt)
@@ -451,7 +486,7 @@ static asynStatus cancelInterruptUser(void *drvPvt, asynUser *pasynUser,
     modbusPvt *pPvt = (modbusPvt *)drvPvt;
     return pPvt->pasynOctet->cancelInterruptUser(pPvt->octetPvt,
                                              pasynUser,registrarPvt);
-} 
+}
 
 static asynStatus setInputEos(void *ppvt, asynUser *pasynUser,
     const char *eos, int eoslen)
