@@ -8,10 +8,11 @@ modbusApp_registerRecordDeviceDriver(pdbbase)
 #                       int noProcessEos);
 drvAsynIPPortConfigure("powerSupply","127.0.0.1:1502", 0, 0, 0)
 asynSetOption("powerSupply", 0, "disconnectOnReadTimeout", "Y")
-modbusInterposeConfig("powerSupply", 3, 2000, 0)
+modbusInterposeConfig("powerSupply", 0, 2000, 0)
 
 # drvModbusAsynConfigure("portName", "tcpPortName", slaveAddress, modbusFunction, modbusStartAddress, modbusLength, dataType, pollMsec, "plcType")
-drvModbusAsynConfigure("powerOn",    "powerSupply", 0, 5, 0x00, 1,  "UINT16", 2000, "Power Supply")
+drvModbusAsynConfigure("powerOnR",   "powerSupply", 0, 1, 0x00, 1,  "UINT16", 2000, "Power Supply")
+drvModbusAsynConfigure("powerOnW",   "powerSupply", 0, 5, 0x00, 1,  "UINT16", 0,    "Power Supply")
 drvModbusAsynConfigure("voltageOn",  "powerSupply", 0, 5, 0x01, 1,  "UINT16", 2000, "Power Supply")
 drvModbusAsynConfigure("resetBlks",  "powerSupply", 0, 5, 0x02, 1,  "UINT16", 2000, "Power Supply")
 drvModbusAsynConfigure("statBits",   "powerSupply", 0, 2, 0x00, 15, "UINT16", 2000, "Power Supply")

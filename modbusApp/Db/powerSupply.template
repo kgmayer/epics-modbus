@@ -1,6 +1,12 @@
-record(bo, "$(PORT):powerOn") {
+record(bi, "$(PORT):powerOnR") {
     field(DTYP, "asynUInt32Digital")
-    field(OUT, "@asynMask(powerOn 0 0x1)")
+    field(INP, "@asynMask(powerOnR 0 0x1)")
+    field(SCAN, "I/O Intr")
+}
+
+record(bo, "$(PORT):powerOnW") {
+    field(DTYP, "asynUInt32Digital")
+    field(OUT, "@asynMask(powerOnW 0 0x1)")
     field(SCAN, "Passive")
 }
 
