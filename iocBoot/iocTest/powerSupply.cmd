@@ -33,4 +33,11 @@ drvModbusAsynConfigure("devInfo",    "powerSupply", 0, 3, 0x14, 1,  "UINT16", 20
 
 dbLoadRecords("../../db/powerSupply.template", "PORT=ps1")
 
+set_savefile_path("$(TOP)/iocBoot/$(IOC)")
+set_pass1_restoreFile("auto_settings.sav")
+save_restoreSet_DatedBackupFiles(1)
+save_restoreSet_NumSeqFiles(0)
+
 iocInit
+
+create_triggered_set("auto_settings.req", "ps1:autosave", "PORT=ps1")

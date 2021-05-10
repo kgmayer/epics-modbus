@@ -25,7 +25,7 @@ USR_CPPFLAGS += -DUSE_TYPED_RSET
 LIB_SRCS += drvModbusAsyn.cpp
 LIB_SRCS += modbusInterpose.c
 LIB_SRCS += testModbusSyncIO.cpp
-LIB_LIBS += asyn 
+LIB_LIBS += asyn
 LIB_LIBS += $(EPICS_BASE_IOC_LIBS)
 LIB_SYS_LIBS_WIN32 += ws2_32
 
@@ -46,6 +46,7 @@ testClient_SRCS += testClient.cpp
 
 PROD_LIBS += modbus
 PROD_LIBS += asyn
+PROD_LIBS += autosave
 PROD_LIBS += $(EPICS_BASE_IOC_LIBS)
 
 PROD_SYS_LIBS_solaris += socket
