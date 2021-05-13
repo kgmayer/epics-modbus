@@ -41,3 +41,5 @@ save_restoreSet_NumSeqFiles(0)
 iocInit
 
 create_triggered_set("auto_settings.req", "ps1:autosave", "PORT=ps1")
+
+seq test "PORT=ps1"

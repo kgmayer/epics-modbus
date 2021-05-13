@@ -19,6 +19,7 @@ EPICS_BASE=$(TOP)/../../base
 
 ASYN = $(TOP)/../../modules/asyn
 AUTOSAVE = $(TOP)/../../modules/autosave
+SNCSEQ = $(TOP)/../../modules/seq
 
 #Capfast users may need the following definitions
 #CAPFAST_TEMPLATES=

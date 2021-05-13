@@ -1,3 +1,4 @@
 registrar(drvModbusAsynRegister)
 registrar(modbusInterposeRegister)
+registrar(testRegistrar)
 include "asSupport.dbd"
